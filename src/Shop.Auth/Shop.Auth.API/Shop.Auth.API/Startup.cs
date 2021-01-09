@@ -1,9 +1,12 @@
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Shop.Auth.API.Services;
+using Shop.Auth.Infrastructure.Context;
 using Shop.Auth.Infrastructure.User.Command;
 using Shop.Shared.API;
 
@@ -18,6 +21,11 @@ namespace Shop.Auth.API
             services.AddWebApi<UserRegisterCommand>();
             services.AddSwagger<Startup>(Configuration);
             services.AddRepository<Startup>();
+            services.AddEfCore<IdentityAccountContext>(Configuration, "Identity");
+            services.AddIdentity<IdentityUser<int>, IdentityRole<int>>()
+                .AddEntityFrameworkStores<IdentityAccountContext>()
+                .AddDefaultTokenProviders();
+            services.AddHostedService<DbInitializerService>();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

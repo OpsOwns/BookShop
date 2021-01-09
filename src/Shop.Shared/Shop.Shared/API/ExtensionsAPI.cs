@@ -1,4 +1,6 @@
 ﻿using Dawn;
+using FluentValidation;
+using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -15,9 +17,6 @@ using Shop.Shared.Model;
 using Shop.Shared.Shared;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
-using System.Reflection;
-using FluentValidation;
-using Hellang.Middleware.ProblemDetails;
 using ILogger = Serilog.ILogger;
 
 namespace Shop.Shared.API
@@ -88,8 +87,10 @@ namespace Shop.Shared.API
             return services;
         }
 
-        public static IServiceCollection AddEfCore<T>(this IServiceCollection services) where T : DbContext
+        public static IServiceCollection AddEfCore<T>(this IServiceCollection services, IConfiguration configuration, string configName) where T : DbContext
         {
+            Guard.Argument(configName, nameof(configName)).NotEmpty().NotNull();
+            services.AddSingleton(configuration.GetOptions<DatabaseOption>(configName));
             services.AddEntityFrameworkSqlServer().
                 AddEntityFrameworkInMemoryDatabase().
                 AddDbContext<T>();
