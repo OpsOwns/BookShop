@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Shop.Auth.API.Services;
 using Shop.Auth.Infrastructure.Context;
 using Shop.Auth.Infrastructure.User.Command;
+using Shop.Auth.Infrastructure.User.Model;
 using Shop.Shared.API;
 
 namespace Shop.Auth.API
@@ -22,7 +23,15 @@ namespace Shop.Auth.API
             services.AddSwagger<Startup>(Configuration);
             services.AddRepository<Startup>();
             services.AddEfCore<IdentityAccountContext>(Configuration, "Identity");
-            services.AddIdentity<IdentityUser<int>, IdentityRole<int>>()
+            services.AddIdentity<ShopUser, ShopRole>(options =>
+                {
+                    options.Password.RequireDigit = true;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredUniqueChars = 1;
+                    options.User.RequireUniqueEmail = true;
+                })
                 .AddEntityFrameworkStores<IdentityAccountContext>()
                 .AddDefaultTokenProviders();
             services.AddHostedService<DbInitializerService>();

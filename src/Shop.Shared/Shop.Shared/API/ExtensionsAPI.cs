@@ -93,7 +93,7 @@ namespace Shop.Shared.API
             services.AddSingleton(configuration.GetOptions<DatabaseOption>(configName));
             services.AddEntityFrameworkSqlServer().
                 AddEntityFrameworkInMemoryDatabase().
-                AddDbContext<T>();
+                AddDbContext<T>(ServiceLifetime.Transient);
             return services;
         }
 

@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Shop.Auth.Infrastructure.User.Model;
 using Shop.Shared.Model;
 
 namespace Shop.Auth.Infrastructure.Context
 {
-    public class IdentityAccountContext : IdentityDbContext<IdentityUser<int>, IdentityRole<int>, int>
+    public class IdentityAccountContext : IdentityDbContext<ShopUser, ShopRole, int>
     {
         private DatabaseOption DatabaseOption { get; }
         private readonly ILoggerFactory _loggerFactory;
@@ -38,8 +39,8 @@ namespace Shop.Auth.Infrastructure.Context
             builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
             builder.Entity<IdentityUserLogin<int>>().ToTable("Logins");
             builder.Entity<IdentityUserToken<int>>().ToTable("Tokens");
-            builder.Entity<IdentityRole<int>>().ToTable("Roles");
-            builder.Entity<IdentityUser<int>>().ToTable("User");
+            builder.Entity<ShopRole>().ToTable("ShopUserRoles");
+            builder.Entity<ShopUser>().ToTable("ShopUser");
         }
     }
 }
