@@ -4,5 +4,6 @@
     {
         public const string AUTH = "auth";
         public const string REGISTER = "register";
+        public const string LOGIN = "login";
     }
 }
