@@ -2,7 +2,7 @@
 {
     public static class TokenProviderNames
     {
-        public const string TOKEN_NAME = "RefreshToken";
-        public const string LOGIN_PROVIDER = "Shop";
+        public const string TokenName = "RefreshToken";
+        public const string LoginProvider = "Shop";
     }
 }

@@ -1,15 +1,17 @@
 ﻿using CSharpFunctionalExtensions;
+using Dawn;
 using Microsoft.AspNetCore.Identity;
 using Shop.Auth.Infrastructure.Security.Jwt;
 using Shop.Auth.Infrastructure.Security.Jwt.Interfaces;
 using Shop.Auth.Infrastructure.Security.Model;
+using Shop.Auth.Infrastructure.User.Command;
 using Shop.Auth.Infrastructure.User.Model;
 using Shop.Shared.ResultResponse;
 using Shop.Shared.Shared;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Shop.Auth.Infrastructure.User.Command
+namespace Shop.Auth.Infrastructure.User.Handler
 {
     public class UserLoginHandler : IHandlerResultOf<UserLoginCommand, TokenResult>
     {
@@ -25,6 +27,7 @@ namespace Shop.Auth.Infrastructure.User.Command
 
         public async Task<Result<TokenResult>> Handle(UserLoginCommand request, CancellationToken cancellationToken)
         {
+            Guard.Argument(request.Login, nameof(request.Login)).NotNull();
             if (request.Login.IsEmpty())
                 throw new AuthException($"invalid {request.Login}");
             if (request.Password.IsEmpty())
@@ -36,11 +39,11 @@ namespace Shop.Auth.Infrastructure.User.Command
             if (!result)
                 return Result.Failure<TokenResult>("Invalid password!");
             var role = await _userManager.GetRolesAsync(userFromDb);
-            var jwtToken = await _jwtFactory.GenerateEncodedToken(userFromDb.Id.ToString(), userFromDb.UserName, role[0]);
+            var jwtToken = await _jwtFactory.GenerateEncodedToken(userFromDb.Id.ToString(), userFromDb.UserName, role[0], userFromDb.Email);
             var refreshToken = _tokenFactory.GenerateToken();
-            await _userManager.RemoveAuthenticationTokenAsync(userFromDb, TokenProviderNames.LOGIN_PROVIDER, TokenProviderNames.TOKEN_NAME);
-            await _userManager.SetAuthenticationTokenAsync(userFromDb, TokenProviderNames.LOGIN_PROVIDER,
-                TokenProviderNames.TOKEN_NAME, refreshToken);
+            await _userManager.RemoveAuthenticationTokenAsync(userFromDb, TokenProviderNames.LoginProvider, TokenProviderNames.TokenName);
+            await _userManager.SetAuthenticationTokenAsync(userFromDb, TokenProviderNames.LoginProvider,
+                TokenProviderNames.TokenName, refreshToken);
             return Result.Success(new TokenResult(refreshToken, jwtToken.Token, jwtToken.ExpiresIn));
         }
     }

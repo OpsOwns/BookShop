@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Shop.Auth.API.Controllers
 {
-    [Route(Routes.AUTH)]
+    [Route(Routes.Auth)]
+    [ApiVersion("1")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class AuthController : BaseController
     {
-        [HttpPut, Route(Routes.REFRESH)]
+        [HttpPut, Route(Routes.Refresh)]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest refreshTokenRequest)
         {
             var result = await Mediator.Send(new RefreshTokenCommand(refreshTokenRequest.AccessToken, refreshTokenRequest.RefreshToken));
@@ -18,7 +20,7 @@ namespace Shop.Auth.API.Controllers
         }
 
 
-        [HttpPost, Route(Routes.LOGIN)]
+        [HttpPost, Route(Routes.Login)]
         public async Task<IActionResult> LoginUser([FromBody] LoginUserRequest loginRequest)
         {
             var result = await Mediator.Send(new UserLoginCommand(loginRequest.Login, loginRequest.Password));

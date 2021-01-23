@@ -20,26 +20,27 @@ namespace Shop.Auth.Infrastructure.Security.Jwt
             _jwtTokenHandler = jwtTokenHandler;
             _jwtOptions = jwtOptions.Value ?? throw new ArgumentNullException(nameof(jwtOptions.Value));
             if (_jwtOptions.ValidFor <= TimeSpan.Zero)
-                throw new ArgumentException("Must be a non-zero TimeSpan.", nameof(JwtIssuerOptions.ValidFor));
+                throw new AuthException("Must be a non-zero TimeSpan.", nameof(JwtIssuerOptions.ValidFor));
 
             if (_jwtOptions.SigningCredentials == null)
-                throw new ArgumentNullException(nameof(JwtIssuerOptions.SigningCredentials));
+                throw new AuthException(nameof(JwtIssuerOptions.SigningCredentials));
 
             if (_jwtOptions.JtiGenerator == null)
-                throw new ArgumentNullException(nameof(JwtIssuerOptions.JtiGenerator));
+                throw new AuthException(nameof(JwtIssuerOptions.JtiGenerator));
         }
 
-        public async Task<AccessToken> GenerateEncodedToken(string id, string userName, string role)
+        public async Task<AccessToken> GenerateEncodedToken(string id, string userName, string role, string subject)
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userName),
+                new Claim(JwtRegisteredClaimNames.Sub, subject),
                 new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, (_jwtOptions.IssuedAt).ToUnixEpochDate().ToString(),
                     ClaimValueTypes.Integer64),
                 new Claim(ClaimTypes.Sid, id),
                 new Claim(ClaimTypes.Role, role),
-                new Claim(ClaimTypes.Country, RegionInfo.CurrentRegion.DisplayName!)
+                new Claim(ClaimTypes.Country, RegionInfo.CurrentRegion.DisplayName!),
+                new Claim(ClaimTypes.Name, userName)
             };
             var jwt = new JwtSecurityToken(
                 _jwtOptions.Issuer,

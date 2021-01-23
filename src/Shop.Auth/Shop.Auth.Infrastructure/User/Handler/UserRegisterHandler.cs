@@ -1,14 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
+using Shop.Auth.Infrastructure.Security.Jwt.Interfaces;
+using Shop.Auth.Infrastructure.User.Command;
 using Shop.Auth.Infrastructure.User.Common;
 using Shop.Auth.Infrastructure.User.Model;
 using Shop.Shared.ResultResponse;
 using System.Threading;
 using System.Threading.Tasks;
-using Shop.Auth.Infrastructure.Security.Jwt.Interfaces;
 
-namespace Shop.Auth.Infrastructure.User.Command
+namespace Shop.Auth.Infrastructure.User.Handler
 {
     public class UserRegisterHandler : IHandlerResultOf<UserRegisterCommand, string>
     {
