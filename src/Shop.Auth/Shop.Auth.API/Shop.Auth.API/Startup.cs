@@ -5,18 +5,24 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Shop.Auth.API.Issues;
 using Shop.Auth.API.Services;
 using Shop.Auth.Infrastructure.Context;
+using Shop.Auth.Infrastructure.Security.Jwt;
+using Shop.Auth.Infrastructure.Security.Jwt.Interfaces;
+using Shop.Auth.Infrastructure.Security.Model;
 using Shop.Auth.Infrastructure.User.Command;
 using Shop.Auth.Infrastructure.User.Model;
 using Shop.Shared.API;
+using System.Text;
 
 namespace Shop.Auth.API
 {
     public class Startup
     {
         public Startup(IConfiguration configuration) => Configuration = configuration;
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddWebApi<UserRegisterCommand>();
@@ -33,8 +39,22 @@ namespace Shop.Auth.API
                     options.User.RequireUniqueEmail = true;
                 })
                 .AddEntityFrameworkStores<IdentityAccountContext>()
-                .AddDefaultTokenProviders();
+                .AddTokenProvider(TokenProviderNames.LOGIN_PROVIDER, typeof(DataProtectorTokenProvider<ShopUser>));
+            var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+            var authSettings = Configuration.GetOptions<AuthSettings>("AuthSettings");
+            services.Configure<JwtIssuerOptions>(options =>
+            {
+                options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
+                options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
+                options.SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(authSettings.SecretKey)), SecurityAlgorithms.HmacSha256);
+            });
+            services.AddSingleton<IJwtTokenValidator, JwtTokenValidator>();
+            services.AddSingleton<IJwtTokenHandler, JwtTokenHandler>();
+            services.AddSingleton<IJwtFactory, JwtFactory>();
+            services.AddSingleton<ITokenFactory, TokenFactory>();
+            services.AddSingleton(authSettings);
             services.AddHostedService<DbInitializerService>();
+            services.AddProblemDetails(x => x.Map<AuthException>(ex => new AuthProblemDetails(ex)));
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
