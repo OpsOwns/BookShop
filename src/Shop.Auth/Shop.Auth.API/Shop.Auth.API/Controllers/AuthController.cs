@@ -10,13 +10,13 @@ namespace Shop.Auth.API.Controllers
     [Route(Routes.AUTH)]
     public class AuthController : BaseController
     {
-        [HttpPost, Route(Routes.REGISTER)]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest registerUserRequest)
+        [HttpPut, Route(Routes.REFRESH)]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest refreshTokenRequest)
         {
-            var result = await Mediator.Send(new UserRegisterCommand(registerUserRequest.Login, registerUserRequest.Password,
-                registerUserRequest.Email));
+            var result = await Mediator.Send(new RefreshTokenCommand(refreshTokenRequest.AccessToken, refreshTokenRequest.RefreshToken));
             return result.IsFailure ? Conflict(result.Error) : Ok(result.Value);
         }
+
 
         [HttpPost, Route(Routes.LOGIN)]
         public async Task<IActionResult> LoginUser([FromBody] LoginUserRequest loginRequest)
