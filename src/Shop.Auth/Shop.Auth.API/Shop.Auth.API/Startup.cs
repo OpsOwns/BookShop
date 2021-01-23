@@ -39,7 +39,7 @@ namespace Shop.Auth.API
                     options.User.RequireUniqueEmail = true;
                 })
                 .AddEntityFrameworkStores<IdentityAccountContext>()
-                .AddTokenProvider(TokenProviderNames.LOGIN_PROVIDER, typeof(DataProtectorTokenProvider<ShopUser>));
+                .AddTokenProvider(TokenProviderNames.LoginProvider, typeof(DataProtectorTokenProvider<ShopUser>));
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
             var authSettings = Configuration.GetOptions<AuthSettings>("AuthSettings");
             services.Configure<JwtIssuerOptions>(options =>

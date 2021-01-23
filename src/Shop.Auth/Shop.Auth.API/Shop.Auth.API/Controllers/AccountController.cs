@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Shop.Auth.API.Controllers
 {
-    [Route(Routes.ACCOUNT)]
+    [Route(Routes.Account)]
+    [ApiVersion("1")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class AccountController : BaseController
     {
-        [HttpPost, Route(Routes.REGISTER)]
+        [HttpPost, Route(Routes.Register)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest registerUserRequest)
         {
             var result = await Mediator.Send(new UserRegisterCommand(registerUserRequest.Login, registerUserRequest.Password,

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Shop.Auth.Infrastructure.Security.Jwt;
 using Shop.Auth.Infrastructure.Security.Jwt.Interfaces;
 using Shop.Auth.Infrastructure.Security.Model;
+using Shop.Auth.Infrastructure.User.Command;
 using Shop.Auth.Infrastructure.User.Model;
 using Shop.Shared.ResultResponse;
 using Shop.Shared.Shared;
@@ -11,7 +12,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Shop.Auth.Infrastructure.User.Command
+namespace Shop.Auth.Infrastructure.User.Handler
 {
     public class RefreshTokenHandler : IHandlerResultOf<RefreshTokenCommand, TokenResult>
     {
@@ -41,12 +42,12 @@ namespace Shop.Auth.Infrastructure.User.Command
             var id = claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.Sid);
             var role = claimsPrincipal.Claims.First(x => x.Type == ClaimTypes.Role);
             var user = await _userManager.FindByIdAsync(id.Value);
-            var jwtToken = await _jwtFactory.GenerateEncodedToken(user.Id.ToString(), user.UserName, role.Value);
+            var jwtToken = await _jwtFactory.GenerateEncodedToken(user.Id.ToString(), user.UserName, role.Value, user.Email);
             var refreshToken = _tokenFactory.GenerateToken();
-            await _userManager.RemoveAuthenticationTokenAsync(user, TokenProviderNames.LOGIN_PROVIDER,
-                  TokenProviderNames.TOKEN_NAME);
-            await _userManager.SetAuthenticationTokenAsync(user, TokenProviderNames.LOGIN_PROVIDER,
-                TokenProviderNames.TOKEN_NAME, refreshToken);
+            await _userManager.RemoveAuthenticationTokenAsync(user, TokenProviderNames.LoginProvider,
+                  TokenProviderNames.TokenName);
+            await _userManager.SetAuthenticationTokenAsync(user, TokenProviderNames.LoginProvider,
+                TokenProviderNames.TokenName, refreshToken);
             return Result.Success(new TokenResult(refreshToken, jwtToken.Token, jwtToken.ExpiresIn));
         }
     }

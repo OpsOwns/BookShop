@@ -3,6 +3,7 @@ using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,12 +13,15 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 using Serilog.Formatting.Compact;
+using Shop.Shared.API.Version;
 using Shop.Shared.Domain;
 using Shop.Shared.Model;
 using Shop.Shared.Shared;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Linq;
 using ILogger = Serilog.ILogger;
+using ValidationProblemDetails = Shop.Shared.Shared.ValidationProblemDetails;
 
 namespace Shop.Shared.API
 {
@@ -47,6 +51,11 @@ namespace Shop.Shared.API
             services.AddProblemDetails(details =>
                 details.Map<ValidationException>(exception => new ValidationProblemDetails(exception)));
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            services.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+            });
             return services;
         }
 
@@ -81,6 +90,9 @@ namespace Shop.Shared.API
                         Type = SecuritySchemeType.ApiKey,
                         Scheme = "Bearer"
                     });
+                options.ResolveConflictingActions(x => x.First());
+                options.OperationFilter<RemoveVersionFromParameter>();
+                options.DocumentFilter<ReplaceVersionWithExactValueInPath>();
             });
             services.AddSwaggerExamplesFromAssemblyOf<T>();
             services.Configure<SwaggerOptions>(c => c.SerializeAsV2 = true);
