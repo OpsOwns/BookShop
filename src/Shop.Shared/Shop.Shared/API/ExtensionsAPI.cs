@@ -2,12 +2,14 @@
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -19,7 +21,9 @@ using Shop.Shared.Model;
 using Shop.Shared.Shared;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 using System.Linq;
+using System.Text;
 using ILogger = Serilog.ILogger;
 using ValidationProblemDetails = Shop.Shared.Shared.ValidationProblemDetails;
 
@@ -96,6 +100,25 @@ namespace Shop.Shared.API
             });
             services.AddSwaggerExamplesFromAssemblyOf<T>();
             services.Configure<SwaggerOptions>(c => c.SerializeAsV2 = true);
+            return services;
+        }
+
+        public static IServiceCollection AddJwt(this IServiceCollection services, AuthOption authOption)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>
+            {
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOption.SecretKey)),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = authOption.Audience,
+                    ValidIssuer = authOption.Issuer,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
             return services;
         }
 
