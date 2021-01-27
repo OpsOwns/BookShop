@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.Auth.API", "Shop.Auth.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.Shared", "..\..\Shop.Shared\Shop.Shared\Shop.Shared.csproj", "{E2BEC227-F415-43CF-867D-4A98F8A8AA32}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.Auth.Infrastructure", "..\Shop.Auth.Infrastructure\Shop.Auth.Infrastructure.csproj", "{7CA491CE-3E40-4611-BECA-0E4872BE80AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.Auth.Application", "..\Shop.Auth.Application\Shop.Auth.Application.csproj", "{030C994D-583E-4FBF-94FE-9B801565888B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{E2BEC227-F415-43CF-867D-4A98F8A8AA32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2BEC227-F415-43CF-867D-4A98F8A8AA32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2BEC227-F415-43CF-867D-4A98F8A8AA32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7CA491CE-3E40-4611-BECA-0E4872BE80AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CA491CE-3E40-4611-BECA-0E4872BE80AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CA491CE-3E40-4611-BECA-0E4872BE80AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CA491CE-3E40-4611-BECA-0E4872BE80AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{030C994D-583E-4FBF-94FE-9B801565888B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{030C994D-583E-4FBF-94FE-9B801565888B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{030C994D-583E-4FBF-94FE-9B801565888B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{030C994D-583E-4FBF-94FE-9B801565888B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
