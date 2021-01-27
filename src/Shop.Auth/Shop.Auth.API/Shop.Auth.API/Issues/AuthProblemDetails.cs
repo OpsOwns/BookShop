@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Shop.Auth.Infrastructure.Security.Jwt;
+using Shop.Auth.Application.Security.Jwt;
 
 namespace Shop.Auth.API.Issues
 {

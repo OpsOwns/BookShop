@@ -8,14 +8,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Shop.Auth.API.Issues;
 using Shop.Auth.API.Services;
-using Shop.Auth.Infrastructure.Context;
-using Shop.Auth.Infrastructure.Security.Jwt;
-using Shop.Auth.Infrastructure.Security.Jwt.Interfaces;
-using Shop.Auth.Infrastructure.Security.Model;
-using Shop.Auth.Infrastructure.User.Command;
-using Shop.Auth.Infrastructure.User.Model;
 using Shop.Shared.API;
 using System.Text;
+using Shop.Auth.Application.Context;
+using Shop.Auth.Application.Domain;
+using Shop.Auth.Application.Security.Jwt;
+using Shop.Auth.Application.Security.Jwt.Interfaces;
+using Shop.Auth.Application.Security.Model;
+using Shop.Auth.Application.User.Command;
 
 namespace Shop.Auth.API
 {

@@ -2,13 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Shop.Auth.Infrastructure.Context;
-using Shop.Auth.Infrastructure.User.Model;
 using Shop.Shared.API;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Shop.Auth.Application.Context;
+using Shop.Auth.Application.Domain;
 
 namespace Shop.Auth.API.Services
 {
