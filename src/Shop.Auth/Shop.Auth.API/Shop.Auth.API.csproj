@@ -10,12 +10,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shop.Shared\Shop.Shared\Shop.Shared.csproj" />
-    <ProjectReference Include="..\..\Shop.Auth.Application\Shop.Auth.Application.csproj" />
+    <Folder Include="logs\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="logs\" />
+    <ProjectReference Include="..\..\Shop.Shared\Shop.Shared\Shop.Shared.csproj" />
+    <ProjectReference Include="..\Shop.Auth.Application\Shop.Auth.Application.csproj" />
   </ItemGroup>
 
 </Project>
