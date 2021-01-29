@@ -10,7 +10,7 @@ namespace Shop.Book.API.Controllers
     {
 
         
-        [HttpGet, Route("test"), Authorize]
+        [HttpGet, Route("test"), Authorize(Roles = "Admin")]
         public IActionResult Get()
         {
             return Ok("działa");

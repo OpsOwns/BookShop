@@ -22,6 +22,7 @@ using Shop.Shared.Shared;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ILogger = Serilog.ILogger;
@@ -76,25 +77,42 @@ namespace Shop.Shared.API
                 .Member(x => x.EndPoint, z => z.NotNull().NotEmpty());
             services.AddSwaggerGen(options =>
             {
-                options.ExampleFilters();
-                options.SwaggerDoc(swaggerOptions.Name, new OpenApiInfo
+            options.ExampleFilters();
+            options.SwaggerDoc(swaggerOptions.Name, new OpenApiInfo
+            {
+                Description = swaggerOptions.Description,
+                Version = swaggerOptions.Version,
+                Title = swaggerOptions.Title
+            });
+            if (security)
+            {
+                options?.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = swaggerOptions.Description,
-                    Version = swaggerOptions.Version,
-                    Title = swaggerOptions.Title
-                });
-                if (security)
-                    options?.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                    {
-                        Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                    Description = @"JWT Authorization header using the Bearer scheme.
                       Enter 'Bearer' [space] and then your token in the text input below.
-                      \r\n\r\nExample: 'Bearer 12345abcdef'",
-                        Name = "Authorization",
-                        In = ParameterLocation.Header,
-                        Type = SecuritySchemeType.ApiKey,
-                        Scheme = "Bearer"
-                    });
-                options.ResolveConflictingActions(x => x.First());
+                      Example: 'Bearer 12345abcdef'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id = JwtBearerDefaults.AuthenticationScheme,
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
+            }
+
+            options.ResolveConflictingActions(x => x.First());
                 options.OperationFilter<RemoveVersionFromParameter>();
                 options.DocumentFilter<ReplaceVersionWithExactValueInPath>();
             });
