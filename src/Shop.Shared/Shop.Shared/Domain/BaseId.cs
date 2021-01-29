@@ -1,23 +1,8 @@
-﻿using System.Collections.Generic;
-using CSharpFunctionalExtensions;
-using Dawn;
-
-namespace Shop.Shared.Domain
+﻿namespace Shop.Shared.Domain
 {
-    public class BaseId : ValueObject
+    public abstract record BaseId<TValue>(TValue Value)
+        where TValue : notnull
     {
-        private const int DeffaultIdValue = 0;
-        public int Value { get; private set; }
-        protected BaseId() { }
-        public BaseId(int id) : this()
-        {
-            Guard.Argument(id, nameof(id)).NotNegative();
-            Value = id;
-        }
-        public static BaseId DefaultId => new BaseId() { Value = DeffaultIdValue };
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return Value;
-        }
+        public override string ToString() => Value.ToString();
     }
 }
