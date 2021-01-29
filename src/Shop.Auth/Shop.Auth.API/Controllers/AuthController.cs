@@ -24,7 +24,7 @@ namespace Shop.Auth.API.Controllers
         public async Task<IActionResult> LoginUser([FromBody] LoginUserRequest loginRequest)
         {
             var result = await Mediator.Send(new UserLoginCommand(loginRequest.Login, loginRequest.Password));
-            return result.IsFailure ? Conflict(result.Error) : Ok(result);
+            return result.IsFailure ? Conflict(result.Error) : Ok(result.Value);
         }
     }
 }
