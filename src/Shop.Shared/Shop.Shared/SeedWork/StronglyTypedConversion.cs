@@ -1,29 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Shop.Shared.SeedWork
 {
     public static class StronglyTypedConversion
     {
+        private static readonly ConcurrentDictionary<Type, ValueConverter> StronglyTypedIdConverters = new();
+
         public static void AddStronglyTypedIdConversions(this ModelBuilder modelBuilder)
         {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            foreach (var property in entityType.GetProperties())
             {
-                foreach (var property in entityType.GetProperties())
-                {
-                    if (!StronglyTypedId.IsStronglyTypedId(property.ClrType, out var valueType)) continue;
-                    var converter = StronglyTypedIdConverters.GetOrAdd(
-                        property.ClrType,
-                        _ => CreateStronglyTypedIdConverter(property.ClrType, valueType));
-                    property.SetValueConverter(converter);
-                }
+                if (!StronglyTypedId.IsStronglyTypedId(property.ClrType, out var valueType)) continue;
+                var converter = StronglyTypedIdConverters.GetOrAdd(
+                    property.ClrType,
+                    _ => CreateStronglyTypedIdConverter(property.ClrType, valueType));
+                property.SetValueConverter(converter);
             }
         }
-
-        private static readonly ConcurrentDictionary<Type, ValueConverter> StronglyTypedIdConverters = new();
 
         private static ValueConverter CreateStronglyTypedIdConverter(
             Type stronglyTypedIdType,
@@ -40,7 +38,7 @@ namespace Shop.Shared.SeedWork
             var fromProviderFuncType = typeof(Func<,>)
                 .MakeGenericType(valueType, stronglyTypedIdType);
             var valueParam = Expression.Parameter(valueType, "value");
-            var ctor = stronglyTypedIdType.GetConstructor(new[] { valueType });
+            var ctor = stronglyTypedIdType.GetConstructor(new[] {valueType});
             var fromProviderExpression = Expression.Lambda(
                 fromProviderFuncType,
                 Expression.New(ctor!, valueParam),
@@ -49,7 +47,7 @@ namespace Shop.Shared.SeedWork
             var converterType = typeof(ValueConverter<,>)
                 .MakeGenericType(stronglyTypedIdType, valueType);
 
-            return (ValueConverter)Activator.CreateInstance(
+            return (ValueConverter) Activator.CreateInstance(
                 converterType,
                 toProviderExpression,
                 fromProviderExpression,

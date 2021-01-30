@@ -1,6 +1,6 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using System.Linq;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Linq;
 
 namespace Shop.Shared.API.Version
 {
@@ -8,14 +8,14 @@ namespace Shop.Shared.API.Version
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if(!operation.Parameters.Any())
+            if (!operation.Parameters.Any())
                 return;
-            
+
             var versionParameter = operation.Parameters.Single(x => x.Name == "version");
             operation.Parameters.Remove(versionParameter);
-
         }
     }
+
     public class ReplaceVersionWithExactValueInPath : IDocumentFilter
     {
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
