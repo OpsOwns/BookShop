@@ -1,4 +1,8 @@
-﻿using Dawn;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Dawn;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
@@ -21,11 +25,6 @@ using Shop.Shared.Model;
 using Shop.Shared.Shared;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ILogger = Serilog.ILogger;
 using ValidationProblemDetails = Shop.Shared.Shared.ValidationProblemDetails;
 
 namespace Shop.Shared.API
@@ -33,20 +32,21 @@ namespace Shop.Shared.API
     public static class ExtensionsApi
     {
         private static ILogger Logger { get; set; }
+
         public static IServiceCollection AddWebApi<T>(this IServiceCollection services) where T : class
         {
             Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
-                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{Context}] {Message:lj}{NewLine}{Exception}")
+                .WriteTo.Console(
+                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{Context}] {Message:lj}{NewLine}{Exception}")
                 .WriteTo.RollingFile(new CompactJsonFormatter(), "logs/log.json")
                 .CreateLogger();
             services.AddControllers(options =>
-                    options.RespectBrowserAcceptHeader = true).
-                AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    options.SerializerSettings.Formatting = Formatting.Indented;
-                });
+                options.RespectBrowserAcceptHeader = true).AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.Formatting = Formatting.Indented;
+            });
             services.Configure<KestrelServerOptions>(o => o.AllowSynchronousIO = true);
             services.Configure<IISServerOptions>(o => o.AllowSynchronousIO = true);
             services.AddMvcCore();
@@ -64,7 +64,8 @@ namespace Shop.Shared.API
             return services;
         }
 
-        public static IServiceCollection AddSwagger<T>(this IServiceCollection services, IConfiguration configuration, bool security = false)
+        public static IServiceCollection AddSwagger<T>(this IServiceCollection services, IConfiguration configuration,
+            bool security = false)
             where T : class
         {
             var swaggerOptions = configuration.GetOptions<SwaggerOption>("Swagger");
@@ -77,42 +78,42 @@ namespace Shop.Shared.API
                 .Member(x => x.EndPoint, z => z.NotNull().NotEmpty());
             services.AddSwaggerGen(options =>
             {
-            options.ExampleFilters();
-            options.SwaggerDoc(swaggerOptions.Name, new OpenApiInfo
-            {
-                Description = swaggerOptions.Description,
-                Version = swaggerOptions.Version,
-                Title = swaggerOptions.Title
-            });
-            if (security)
-            {
-                options?.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                options.ExampleFilters();
+                options.SwaggerDoc(swaggerOptions.Name, new OpenApiInfo
                 {
-                    Description = @"JWT Authorization header using the Bearer scheme.
+                    Description = swaggerOptions.Description,
+                    Version = swaggerOptions.Version,
+                    Title = swaggerOptions.Title
+                });
+                if (security)
+                {
+                    options?.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                    {
+                        Description = @"JWT Authorization header using the Bearer scheme.
                       Enter 'Bearer' [space] and then your token in the text input below.
                       Example: 'Bearer 12345abcdef'",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme
-                });
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
+                        Name = "Authorization",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.ApiKey,
+                        Scheme = JwtBearerDefaults.AuthenticationScheme
+                    });
+                    options.AddSecurityRequirement(new OpenApiSecurityRequirement
                     {
-                        new OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference
+                            new OpenApiSecurityScheme
                             {
-                                Id = JwtBearerDefaults.AuthenticationScheme,
-                                Type = ReferenceType.SecurityScheme
-                            }
-                        },
-                        new List<string>()
-                    }
-                });
-            }
+                                Reference = new OpenApiReference
+                                {
+                                    Id = JwtBearerDefaults.AuthenticationScheme,
+                                    Type = ReferenceType.SecurityScheme
+                                }
+                            },
+                            new List<string>()
+                        }
+                    });
+                }
 
-            options.ResolveConflictingActions(x => x.First());
+                options.ResolveConflictingActions(x => x.First());
                 options.OperationFilter<RemoveVersionFromParameter>();
                 options.DocumentFilter<ReplaceVersionWithExactValueInPath>();
             });
@@ -127,7 +128,6 @@ namespace Shop.Shared.API
             {
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
-
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOption.SecretKey)),
                     ValidateIssuer = true,
@@ -140,13 +140,13 @@ namespace Shop.Shared.API
             return services;
         }
 
-        public static IServiceCollection AddEfCore<T>(this IServiceCollection services, IConfiguration configuration, string configName) where T : DbContext
+        public static IServiceCollection AddEfCore<T>(this IServiceCollection services, IConfiguration configuration,
+            string configName) where T : DbContext
         {
             Guard.Argument(configName, nameof(configName)).NotEmpty().NotNull();
             services.AddSingleton(configuration.GetOptions<DatabaseOption>(configName));
-            services.AddEntityFrameworkSqlServer().
-                AddEntityFrameworkInMemoryDatabase().
-                AddDbContext<T>(ServiceLifetime.Transient);
+            services.AddEntityFrameworkSqlServer().AddEntityFrameworkInMemoryDatabase()
+                .AddDbContext<T>(ServiceLifetime.Transient);
             return services;
         }
 
@@ -161,6 +161,7 @@ namespace Shop.Shared.API
             });
             return serviceCollection;
         }
+
         public static TModel GetOptions<TModel>(this IConfiguration configuration, string sectionName)
             where TModel : new()
         {
