@@ -1,8 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Shop.Shared.Domain;
+using Shop.Shared.Domain.Event;
 using Shop.Shared.Model;
 using Shop.Shared.SeedWork;
 using Shop.Store.Core.Book;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Shop.Store.Infrastructure.Db
 {
@@ -10,12 +15,13 @@ namespace Shop.Store.Infrastructure.Db
     {
         private readonly DatabaseOption _databaseOption;
         private readonly ILoggerFactory _loggerFactory;
-
-        public BookContext(DbContextOptions options, DatabaseOption databaseOption, ILoggerFactory loggerFactory) :
+        private readonly IDomainEventDispatcher _domainEventDispatcher;
+        public BookContext(DbContextOptions options, DatabaseOption databaseOption, ILoggerFactory loggerFactory, IDomainEventDispatcher domainEventDispatcher) :
             base(options)
         {
             _databaseOption = databaseOption;
             _loggerFactory = loggerFactory;
+            _domainEventDispatcher = domainEventDispatcher;
         }
 
         public DbSet<BookInfo> Books { get; set; }
@@ -36,6 +42,16 @@ namespace Shop.Store.Infrastructure.Db
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(BookContext).Assembly);
             modelBuilder.AddStronglyTypedIdConversions();
+            base.OnModelCreating(modelBuilder);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
+        {
+            var entities = ChangeTracker.Entries().Where(x => x.Entity is Entity)
+                .Select(x => (Entity)x.Entity).ToList();
+            if (entities.Count > 0)
+                entities.ForEach(async x => await _domainEventDispatcher.Dispatch(x.DomainEvents.ToArray()));
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }

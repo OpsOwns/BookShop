@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dawn;
+﻿using Dawn;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
@@ -21,10 +17,15 @@ using Serilog;
 using Serilog.Formatting.Compact;
 using Shop.Shared.API.Version;
 using Shop.Shared.Domain;
+using Shop.Shared.Domain.Event;
 using Shop.Shared.Model;
 using Shop.Shared.Shared;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using ValidationProblemDetails = Shop.Shared.Shared.ValidationProblemDetails;
 
 namespace Shop.Shared.API
@@ -52,7 +53,6 @@ namespace Shop.Shared.API
             services.AddMvcCore();
             services.AddLogging(x => x.AddSerilog(Logger));
             services.AddValidatorsFromAssembly(typeof(T).Assembly);
-            services.AddMediatR(typeof(T));
             services.AddProblemDetails(details =>
                 details.Map<ValidationException>(exception => new ValidationProblemDetails(exception)));
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
@@ -63,7 +63,11 @@ namespace Shop.Shared.API
             });
             return services;
         }
-
+        public static IServiceCollection AddDomainEvents(this IServiceCollection services)
+        {
+            services.AddTransient<IDomainEventDispatcher, DomainEventDispatcher>();
+            return services;
+        }
         public static IServiceCollection AddSwagger<T>(this IServiceCollection services, IConfiguration configuration,
             bool security = false)
             where T : class
