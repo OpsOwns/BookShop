@@ -1,12 +1,16 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Shop.Book.API.SeedWork;
 using Shop.Shared.API;
+using Shop.Store.API.SeedWork;
+using Shop.Store.API.Services;
+using Shop.Store.Application.Command.Book;
+using Shop.Store.Infrastructure.Db;
 
-namespace Shop.Book.API
+namespace Shop.Store.API
 {
     public class Startup
     {
@@ -22,9 +26,12 @@ namespace Shop.Book.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddWebApi<Startup>();
+            services.AddWebApi<BookContext>();
+            services.AddDomainEvents();
             services.AddSwagger<Startup>(Configuration, true);
+            services.AddEfCore<BookContext>(Configuration, "StoreDB").AddHostedService<SeedService>();
             services.AddJwt(_config.AuthSettings);
+            services.AddMediatR(typeof(CreateBookCommand).Assembly);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

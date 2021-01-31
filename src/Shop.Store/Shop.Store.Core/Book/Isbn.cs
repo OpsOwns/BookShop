@@ -7,8 +7,8 @@ namespace Shop.Store.Core.Book
 {
     public enum TypeIsbn
     {
-        Isbn10,
-        Isbn13
+        Isbn10 = 1,
+        Isbn13 = 2,
     }
 
     public class Isbn : ValueObject
@@ -17,7 +17,7 @@ namespace Shop.Store.Core.Book
         {
             IsbnCode = isbn;
         }
-
+        protected Isbn() { }
         public string IsbnCode { get; }
 
         public static Result<Isbn> Create(TypeIsbn typeIsbn, string isbnCode)

@@ -2,7 +2,7 @@
 using Shop.Shared.API;
 using Shop.Shared.Model;
 
-namespace Shop.Book.API.SeedWork
+namespace Shop.Store.API.SeedWork
 {
     public class StartupConfig
     {
