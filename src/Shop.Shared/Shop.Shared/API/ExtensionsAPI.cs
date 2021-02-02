@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AutoMapper;
 using ValidationProblemDetails = Shop.Shared.Shared.ValidationProblemDetails;
 
 namespace Shop.Shared.API
@@ -153,7 +154,11 @@ namespace Shop.Shared.API
                 .AddDbContext<T>(ServiceLifetime.Transient);
             return services;
         }
-
+        public static IServiceCollection AddMapper<T>(this IServiceCollection services) where T : class
+        {
+            services.AddAutoMapper(typeof(T));
+            return services;
+        }
         public static IServiceCollection AddRepository<T>(this IServiceCollection serviceCollection) where T : class
         {
             serviceCollection.Scan(scan =>

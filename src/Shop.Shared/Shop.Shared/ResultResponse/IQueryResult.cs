@@ -3,11 +3,10 @@ using MediatR;
 
 namespace Shop.Shared.ResultResponse
 {
-    public interface IRequestResultOf<T> : IRequest<Result<T>>
+    public interface IQueryResult<T> : IRequest<Result<T>>
     {
     }
-
-    public interface IRequestResult : IRequest<Result>
+    public interface IQuery<out T> : IRequest<T>
     {
     }
 }

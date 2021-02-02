@@ -32,6 +32,8 @@ namespace Shop.Store.API
             services.AddEfCore<BookContext>(Configuration, "StoreDB").AddHostedService<SeedService>();
             services.AddJwt(_config.AuthSettings);
             services.AddMediatR(typeof(CreateBookCommand).Assembly);
+            services.AddRepository<BookContext>();
+            services.AddMapper<CreateBookCommand>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

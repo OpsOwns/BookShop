@@ -11,8 +11,9 @@ namespace Shop.Shared.API.Version
             if (!operation.Parameters.Any())
                 return;
 
-            var versionParameter = operation.Parameters.Single(x => x.Name == "version");
-            operation.Parameters.Remove(versionParameter);
+            var versionParameter = operation.Parameters.SingleOrDefault(x => x.Name == "version");
+            if (versionParameter is not null)
+                operation.Parameters.Remove(versionParameter);
         }
     }
 
