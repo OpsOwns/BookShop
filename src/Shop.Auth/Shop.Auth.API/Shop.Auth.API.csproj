@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shop.Shared\Shop.Shared\Shop.Shared.csproj" />
-    <ProjectReference Include="..\Shop.Auth.Application\Shop.Auth.Application.csproj" />
+    <ProjectReference Include="..\Shop.Auth.Services\Shop.Auth.Services.csproj" />
   </ItemGroup>
 
 </Project>
