@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Auth.API.Contracts.V1;
 using Shop.Auth.API.Contracts.V1.Request;
+using Shop.Auth.Services.User.Command;
 using Shop.Shared.API;
 using System.Threading.Tasks;
-using Shop.Auth.Application.User.Command;
 
 namespace Shop.Auth.API.Controllers
 {

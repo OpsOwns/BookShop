@@ -8,14 +8,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Shop.Auth.API.Issues;
 using Shop.Auth.API.Services;
+using Shop.Auth.Services.Context;
+using Shop.Auth.Services.Domain;
+using Shop.Auth.Services.Security.Jwt;
+using Shop.Auth.Services.Security.Jwt.Interfaces;
+using Shop.Auth.Services.Security.Model;
+using Shop.Auth.Services.User.Command;
 using Shop.Shared.API;
 using System.Text;
-using Shop.Auth.Application.Context;
-using Shop.Auth.Application.Domain;
-using Shop.Auth.Application.Security.Jwt;
-using Shop.Auth.Application.Security.Jwt.Interfaces;
-using Shop.Auth.Application.Security.Model;
-using Shop.Auth.Application.User.Command;
+using MediatR;
 
 namespace Shop.Auth.API
 {
@@ -28,6 +29,7 @@ namespace Shop.Auth.API
             services.AddWebApi<UserRegisterCommand>();
             services.AddSwagger<Startup>(Configuration);
             services.AddRepository<Startup>();
+            services.AddMediatR(typeof(UserRegisterCommand).Assembly);
             services.AddEfCore<IdentityAccountContext>(Configuration, "Identity");
             services.AddIdentity<ShopUser, ShopRole>(options =>
                 {
