@@ -350,3 +350,5 @@ MigrationBackup/
 .ionide/
 
 src/Shop.Book/Domain.txt
+
+src/Shop.Store/Domain.txt
