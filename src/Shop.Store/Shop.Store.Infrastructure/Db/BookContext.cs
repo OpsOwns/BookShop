@@ -5,6 +5,7 @@ using Shop.Shared.Domain.Event;
 using Shop.Shared.Model;
 using Shop.Shared.SeedWork;
 using Shop.Store.Core.Book;
+using Shop.Store.Core.BookContent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace Shop.Store.Infrastructure.Db
         }
 
         public DbSet<BookInfo> Books { get; set; }
+        public DbSet<Content> BookContents { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

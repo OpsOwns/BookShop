@@ -1,10 +1,11 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Shared.API;
+using Shop.Shared.Shared;
 using Shop.Store.API.Contract.V1;
 using Shop.Store.API.Contract.V1.Models.Book;
 using Shop.Store.Application.Command.Book;
 using Shop.Store.Application.Query.Book;
+using System;
 using System.Threading.Tasks;
 
 namespace Shop.Store.API.Controllers
@@ -13,12 +14,12 @@ namespace Shop.Store.API.Controllers
     public class BookController : BaseController
     {
         [HttpPost, Route(Routes.AddBook)]
-        public async Task<IActionResult> Create([FromBody] AddBookRequest addBookRequest)
+        public async Task<IActionResult> Create([FromForm] AddBookRequest addBookRequest)
         {
             var result = await Mediator.Send(new CreateBookCommand(addBookRequest.Name, addBookRequest.SureName,
                 addBookRequest.Title,
                 addBookRequest.Year, addBookRequest.IsbnType, addBookRequest.IsbnCode,
-                addBookRequest.CategoryBook, addBookRequest.CategoryName));
+                addBookRequest.CategoryBook, addBookRequest.CategoryName, addBookRequest.File is not null ? new BookContent(addBookRequest.File.FileName, await addBookRequest.File?.GetBytes()) : null));
             return result.IsFailure ? BadRequest(result.Error) : Ok(result.Value);
         }
         [HttpGet, Route(Routes.GetBook)]
