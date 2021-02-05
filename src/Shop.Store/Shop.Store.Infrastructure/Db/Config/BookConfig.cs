@@ -31,6 +31,7 @@ namespace Shop.Store.Infrastructure.Db.Config
             {
                 p.Property(x => x.IsbnCode).HasColumnName("IsbnCode");
             });
+            builder.HasOne(x => x.Content);
         }
     }
 }

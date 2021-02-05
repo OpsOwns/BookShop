@@ -19,7 +19,9 @@ namespace Shop.Store.Application.Mapper
                     dest.MapFrom(map => map.BookCategory.CategoryName)).ForMember(x => x.BooksCategory, dest
                     => dest.MapFrom(map => map.BookCategory.CategoryBook))
                 .ForMember(x => x.BookId, dest
-                    => dest.MapFrom(map => map.BookId.Value));
+                    => dest.MapFrom(map => map.BookId.Value))
+                .ForPath(x => x.BookContentDto.File, dest => dest.MapFrom(map => map.Content.FileContent.File))
+                .ForPath(x => x.BookContentDto.Title, dest => dest.MapFrom(map => map.Content.FileContent.FileTitle));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Dawn;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,7 +54,6 @@ namespace Shop.Shared.API
             services.Configure<IISServerOptions>(o => o.AllowSynchronousIO = true);
             services.AddMvcCore();
             services.AddLogging(x => x.AddSerilog(Logger));
-            services.AddValidatorsFromAssembly(typeof(T).Assembly);
             services.AddProblemDetails(details =>
                 details.Map<ValidationException>(exception => new ValidationProblemDetails(exception)));
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
@@ -64,6 +64,7 @@ namespace Shop.Shared.API
             });
             return services;
         }
+        public static IServiceCollection AddValidation<T>(this IServiceCollection services) where  T : class => services.AddValidatorsFromAssembly(typeof(T).Assembly);
         public static IServiceCollection AddDomainEvents(this IServiceCollection services)
         {
             services.AddTransient<IDomainEventDispatcher, DomainEventDispatcher>();
@@ -126,7 +127,6 @@ namespace Shop.Shared.API
             services.Configure<SwaggerOptions>(c => c.SerializeAsV2 = true);
             return services;
         }
-
         public static IServiceCollection AddJwt(this IServiceCollection services, AuthOption authOption)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(x =>

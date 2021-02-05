@@ -12,5 +12,12 @@ namespace Shop.Store.Application.Dto.Book
         public string BooksCategory { get; set; }
         public string NameCategory { get; set; }
         public string IsbnCode { get; set; }
+        public BookContentDto BookContentDto { get; set; }
+    }
+
+    public class BookContentDto
+    {
+        public string Title { get; set; }
+        public string File { get; set; }
     }
 }

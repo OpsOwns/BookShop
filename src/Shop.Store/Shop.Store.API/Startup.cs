@@ -8,6 +8,7 @@ using Shop.Shared.API;
 using Shop.Store.API.SeedWork;
 using Shop.Store.API.Services;
 using Shop.Store.Application.Command.Book;
+using Shop.Store.Application.Command.Validation;
 using Shop.Store.Infrastructure.Db;
 
 namespace Shop.Store.API
@@ -34,6 +35,7 @@ namespace Shop.Store.API
             services.AddMediatR(typeof(CreateBookCommand).Assembly);
             services.AddRepository<BookContext>();
             services.AddMapper<CreateBookCommand>();
+            services.AddValidation<BookValidation>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
