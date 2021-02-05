@@ -18,6 +18,6 @@ namespace Shop.Store.Application.Dto.Book
     public class BookContentDto
     {
         public string Title { get; set; }
-        public string File { get; set; }
+        public byte[] File { get; set; }
     }
 }
