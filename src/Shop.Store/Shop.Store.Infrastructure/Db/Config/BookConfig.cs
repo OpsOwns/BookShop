@@ -5,9 +5,9 @@ using System;
 
 namespace Shop.Store.Infrastructure.Db.Config
 {
-    public class BookConfig : IEntityTypeConfiguration<BookInfo>
+    public class BookConfig : IEntityTypeConfiguration<Books>
     {
-        public void Configure(EntityTypeBuilder<BookInfo> builder)
+        public void Configure(EntityTypeBuilder<Books> builder)
         {
             builder.ToTable("Books");
             builder.HasKey(x => x.BookId);
@@ -15,11 +15,6 @@ namespace Shop.Store.Infrastructure.Db.Config
             {
                 p.Property(x => x.Title).HasColumnName("Title");
                 p.Property(x => x.Year).HasColumnName("Year");
-            });
-            builder.OwnsOne(x => x.Author, p =>
-            {
-                p.Property(x => x.Name).HasColumnName("Name");
-                p.Property(x => x.SureName).HasColumnName("SureName");
             });
             builder.OwnsOne(x => x.BookCategory, p =>
             {

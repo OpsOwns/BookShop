@@ -19,7 +19,7 @@ namespace Shop.Store.API.Controllers
             var result = await Mediator.Send(new CreateBookCommand(addBookRequest.Name, addBookRequest.SureName,
                 addBookRequest.Title,
                 addBookRequest.Year, addBookRequest.IsbnType, addBookRequest.IsbnCode,
-                addBookRequest.CategoryBook, addBookRequest.CategoryName, addBookRequest.File is not null ? new BookContent(addBookRequest.File.FileName, await addBookRequest.File?.GetBytes()) : null));
+                addBookRequest.CategoryBook, addBookRequest.CategoryName, (addBookRequest.File is not null ? new BookContent(addBookRequest.File.FileName, await addBookRequest.File?.GetBytes()) : null)!));
             return result.IsFailure ? BadRequest(result.Error) : Ok(result.Value);
         }
         [HttpGet, Route(Routes.GetBook)]
