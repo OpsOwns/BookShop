@@ -10,7 +10,7 @@ namespace Shop.Store.Application.Command.Book
 {
     public record BookContent(string FileTitle, byte[] File);
     public record CreateBookCommand(string Name, string SureName, string Title,
-        int Year, int IsbnType, string IsbnCode, int CategoryBook, string CategoryName, BookContent BookContent) : ICommand<string>;
+        int Year, int IsbnType, string IsbnCode, int CategoryBook, string CategoryName, BookContent BookContent) : ICommandResultOf<string>;
     public class CreateBookCommandHandler : ICommandHandler<CreateBookCommand, string>
     {
         private readonly IBookRepository _bookRepository;
