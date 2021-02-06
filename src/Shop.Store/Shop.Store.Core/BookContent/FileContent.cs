@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Shop.Shared.Shared;
+using System;
 using System.Collections.Generic;
 
 namespace Shop.Store.Core.BookContent
@@ -8,6 +9,7 @@ namespace Shop.Store.Core.BookContent
     {
         public byte[] File { get; }
         public string FileTitle { get; }
+        public static FileContent Default => new(Array.Empty<byte>(), string.Empty);
         private FileContent(byte[] file, string fileTitle)
         {
             File = file;

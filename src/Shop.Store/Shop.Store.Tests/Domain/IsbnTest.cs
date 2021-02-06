@@ -2,7 +2,7 @@
 using Shop.Store.Core.Book;
 using Xunit;
 
-namespace Shop.Book.Tests.Domain.Book
+namespace Shop.Store.Tests.Domain
 {
     public class IsbnTest
     {

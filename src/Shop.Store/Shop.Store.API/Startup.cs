@@ -22,9 +22,7 @@ namespace Shop.Store.API
             Configuration = configuration;
             _config = new StartupConfig(Configuration);
         }
-
         private IConfiguration Configuration { get; }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddWebApi<BookContext>();
@@ -37,7 +35,6 @@ namespace Shop.Store.API
             services.AddMapper<CreateBookCommand>();
             services.AddValidation<BookValidation>();
         }
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -46,7 +43,6 @@ namespace Shop.Store.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shop.Book.API v1"));
             }
-
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();

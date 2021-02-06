@@ -6,6 +6,7 @@ using Shop.Shared.Model;
 using Shop.Shared.SeedWork;
 using Shop.Store.Core.Book;
 using Shop.Store.Core.BookContent;
+using Shop.Store.Core.Price;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,10 +25,10 @@ namespace Shop.Store.Infrastructure.Db
             _loggerFactory = loggerFactory;
             _domainEventDispatcher = domainEventDispatcher;
         }
-
-        public DbSet<BookInfo> Books { get; set; }
+        public DbSet<Books> Books { get; set; }
         public DbSet<Content> BookContents { get; set; }
-
+        public DbSet<BookCosts> BookCosts { get; set; }
+        public DbSet<Author> Authors { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (_databaseOption.InMemmory)
