@@ -21,7 +21,10 @@ namespace Shop.Store.Core.Price
             Quantity = quantity >= 0 ? quantity : throw new BookException($"{nameof(quantity)} can't be less than 0");
             Book = book;
         }
-
+        public void IncreaseCosts(Money money)
+        {
+            BookCost += money ?? throw new BookException($"{nameof(money)} can't be null");
+        }
         public void ChangeCosts(Money money, int quantity, Books book)
         {
             if (quantity < 0)

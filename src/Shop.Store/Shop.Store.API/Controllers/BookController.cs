@@ -26,5 +26,14 @@ namespace Shop.Store.API.Controllers
         public async Task<IActionResult> GetBook(Guid bookId) => Ok(await Mediator.Send(new GetBookQuery(bookId)));
         [HttpGet, Route(Routes.GetBooks)]
         public async Task<IActionResult> GetBooks() => Ok(await Mediator.Send(new GetBooksQuery()));
+
+        [HttpPost, Route(Routes.AddCosts)]
+        public async Task<IActionResult> AddCostsBook(Guid bookId, [FromBody] AddBookCostsRequest addBookCosts)
+        {
+            var result = await Mediator.Send(new CreateBookCostsCommand(bookId, addBookCosts.Amount,
+                addBookCosts.Currency,
+                addBookCosts.Quantity));
+            return result.IsFailure ? BadRequest(result.Error) : Ok(result.Value);
+        }
     }
 }

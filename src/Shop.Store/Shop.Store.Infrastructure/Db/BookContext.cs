@@ -15,6 +15,12 @@ namespace Shop.Store.Infrastructure.Db
 {
     public class BookContext : DbContext
     {
+        #region DbSets
+        public DbSet<Books> Books { get; set; }
+        public DbSet<Content> BookContents { get; set; }
+        public DbSet<BookCosts> BookCosts { get; set; }
+        public DbSet<Author> Authors { get; set; }
+        #endregion
         private readonly DatabaseOption _databaseOption;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IDomainEventDispatcher _domainEventDispatcher;
@@ -25,10 +31,6 @@ namespace Shop.Store.Infrastructure.Db
             _loggerFactory = loggerFactory;
             _domainEventDispatcher = domainEventDispatcher;
         }
-        public DbSet<Books> Books { get; set; }
-        public DbSet<Content> BookContents { get; set; }
-        public DbSet<BookCosts> BookCosts { get; set; }
-        public DbSet<Author> Authors { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (_databaseOption.InMemmory)

@@ -4,7 +4,7 @@ using MediatR;
 namespace Shop.Shared.ResultResponse
 {
     public interface ICommandHandler<in TIn, TOut> : IRequestHandler<TIn, Result<TOut>>
-        where TIn : ICommand<TOut>
+        where TIn : ICommandResultOf<TOut>
     {
     }
 
