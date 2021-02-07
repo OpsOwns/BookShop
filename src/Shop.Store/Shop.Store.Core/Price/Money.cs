@@ -34,6 +34,7 @@ namespace Shop.Store.Core.Price
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return Amount;
+            yield return Currency;
         }
         public override bool Equals(object obj) => ReferenceEquals(this, obj) || !ReferenceEquals(obj, null);
         protected bool Equals(Money other) => base.Equals(other) && Amount == other.Amount && Currency == other.Currency;

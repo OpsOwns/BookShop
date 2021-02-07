@@ -20,6 +20,6 @@ namespace Shop.Store.Application.Query.Book
             _mapper = mapper;
         }
         public async Task<BooksDto> Handle(GetBookQuery request, CancellationToken cancellationToken)
-            => _mapper.Map<BooksDto>(await _bookRepository.FindBook(new BookId(request.BookId)));
+            => _mapper.Map<BooksDto>((await _bookRepository.FindBook(new BookId(request.BookId))).Value);
     }
 }

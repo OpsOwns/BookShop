@@ -1,6 +1,4 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Http;
-using Shop.Store.API.Contract.V1.Models.Book;
+﻿using Shop.Store.API.Contract.V1.Models.Book;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Shop.Store.API.Contract.V1.Sample

@@ -1,8 +1,6 @@
-﻿using Shop.Store.Core.Book;
-using Shop.Store.Tests.Helper;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
+﻿using System;
 using Shop.Store.Core.Price;
+using Shop.Store.Tests.Helper;
 using Xunit;
 
 namespace Shop.Store.Tests.Domain
@@ -10,22 +8,27 @@ namespace Shop.Store.Tests.Domain
     public class PriceInfoTest : TestBase
     {
         [Fact]
-        public void ShouldAddPriceTest()
+        public void ShouldCreateDefaultBookCostsTest()
         {
-            var price = new BookPrice();
-            price.AddBook(DefaultBookInfo, 20.5M, 5);
+            var bookCosts = new BookCosts(Money.Create(5, "PL").Value, 10, DefaultBookInfo);
+            Assert.NotNull(bookCosts);
+            Assert.Equal(5, bookCosts.BookCost.Amount);
+            Assert.Equal("PL", bookCosts.BookCost.Currency);
+        }
+        [Fact]
+        public void IncreaseCostOfBookWithDifferentCurrencyFailTest()
+        {
+            var bookCosts = new BookCosts(Money.Create(5, "PL").Value, 10, DefaultBookInfo);
+            var exception = Assert.Throws<Exception>(() => bookCosts.IncreaseCosts(Money.Create(10, "EU").Value));
+            Assert.Equal("Currency must be same", exception.Message);
+        }
+        [Fact]
+        public void IncreaseCostsOfBookTest()
+        {
+            var bookCosts = new BookCosts(Money.Create(5, "PL").Value, 10, DefaultBookInfo);
+            bookCosts.IncreaseCosts(Money.Create(10, "PL").Value);
+            Assert.Equal(15, bookCosts.BookCost.Amount);
         }
     }
 
-    public class BookPrice
-    {
-        private List<BookPrice> _books = new();
-        public IReadOnlyList<BookPrice> BookInfos => _books;
-        public Books BookInfo { get; private set; }
-        public Money Money { get; set; }
-        public void AddBook(Books defaultBookInfo, decimal prize, int quantity)
-        {
-        
-        }
-    }
 }
